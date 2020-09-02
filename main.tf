@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1"
+  region = var.region
 }
 
 resource "aws_sqs_queue" "queue" {
@@ -117,7 +117,7 @@ resource "aws_api_gateway_integration" "integration" {
   http_method = aws_api_gateway_method.post.http_method
   type = "AWS"
   integration_http_method = "POST"
-  uri = "arn:aws:apigateway:us-east-1:sqs:path/${replace(replace(aws_sqs_queue.queue.arn, "arn:aws:sqs:us-east-1:", ""), ":", "/")}"
+  uri = "arn:aws:apigateway:${var.region}:sqs:path/${replace(replace(aws_sqs_queue.queue.arn, "arn:aws:sqs:${var.region}:", ""), ":", "/")}"
   credentials = aws_iam_role.role.arn
   passthrough_behavior = "NEVER"
   request_parameters = {
